@@ -57,7 +57,7 @@ public abstract class AbstractClient {
 	}
 	// Stream 의 구성
 	protected void setUpStream() throws IOException{
-		socket = new Socket("localhost", 5000);
+		socket = new Socket("192.168.0.45", 5000);
 		writerStream = new PrintWriter(socket.getOutputStream(), true);
 		readerStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		keyboardReader = new BufferedReader(new InputStreamReader(System.in));

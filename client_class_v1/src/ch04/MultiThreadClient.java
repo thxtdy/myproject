@@ -14,7 +14,7 @@ public class MultiThreadClient {
 		
 		try {
 		
-			Socket socket = new Socket("192.168.0.111", 5000);
+			Socket socket = new Socket("192.168.0.48", 5000);
 			System.out.println("*** connected to Server ***");
 			
 			// 클라이언트에서 서버로 메시지 보내기 write, out

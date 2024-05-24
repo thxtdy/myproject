@@ -2,9 +2,10 @@ package ch05;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 public class MyThreadServer extends AbstractServer{
+	
+	MyThreadServer server;
 
 	@Override
 	protected void setupServer() throws IOException {
@@ -23,7 +24,8 @@ public class MyThreadServer extends AbstractServer{
 	
 	public static void main(String[] args) {
 		MyThreadServer myThreadServer = new MyThreadServer();
-		System.out.println("2222222222222222222222");
+		System.out.println("서버가 시작되었습니다.");
+		
 		myThreadServer.run();
 	}
 	
