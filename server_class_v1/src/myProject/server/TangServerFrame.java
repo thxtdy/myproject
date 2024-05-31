@@ -3,10 +3,9 @@ package myProject.server;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Iterator;
-import java.util.Scanner;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,28 +16,23 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import lombok.Data;
-
-import lombok.Data;
-
 @Data
 
-public class TangServerFrame extends JFrame {
-	
+public class TangServerFrame extends JFrame implements ActionListener {
+
 	private TangServer mContext;
-	
+
 	private TangServerFrame frame;
-	private TangServer server;
 	private ServerSocket serverSocket;
 
 	private JLabel tanghooruFrame;
 	private JButton startButton;
 	private JButton endButton;
-	private JTextField text; // PORT NUM
+	private JTextField portText; // PORT NUM
 	private JScrollPane userList;
-	private JTextField listText;
-	private JTextArea serverList;
-	
-	
+	public JTextField listText;
+	public JTextArea serverList;
+
 	public TangServerFrame(TangServer mContext) {
 		this.mContext = mContext;
 		initData();
@@ -68,61 +62,72 @@ public class TangServerFrame extends JFrame {
 		endButton.setBackground(new Color(0, 191, 99));
 		endButton.setBorderPainted(false);
 
-		text = new JTextField(10);
-		text.setSize(150, 30);
-		text.setLocation(320, 700);
+		portText = new JTextField(10);
+		portText.setSize(150, 30);
+		portText.setLocation(320, 700);
 
 		serverList = new JTextArea();
 		serverList.setBounds(200, 100, 400, 550);
 		serverList.setEnabled(false);
 
-
 	}
 
 	public void setInitLayout() {
 
-		tanghooruFrame.add(startButton);
-		tanghooruFrame.add(endButton);
-		tanghooruFrame.add(text);
-		tanghooruFrame.add(serverList);
+		add(startButton);
+		add(endButton);
+		add(serverList);
 
+		add(portText);
 		add(tanghooruFrame);
 
 		setVisible(true);
 
 	}
 
-
 	public void addEventListener() {
-		
 
-		startButton.addActionListener(new ActionListener() {
+		startButton.addActionListener(this);
+		endButton.addActionListener(this);
+
+		portText.addKeyListener(new KeyListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(e.getSource() == startButton && !text.getText().equals("")) {
-					String port = text.getText();
-					serverList.append(port  +" 로 연결하였습니다." + "\n");
-					mContext.startServer();
+			public void keyTyped(KeyEvent e) {
+
+				char keyChar = e.getKeyChar();
+				if (!Character.isDigit(keyChar) && keyChar != KeyEvent.VK_BACK_SPACE) {
+
+					e.consume(); // 입력 취소
 				}
+
+				String text = portText.getText();
+				if (text.length() >= 5) {
+
+					e.consume();
+
+				}
+
 			}
-//				if (e.getSource() == startButton && !text.getText().equals("")) {
-//						serverList.setText(text.getText() + ": " + "PORT CONNECTED\n");
-//						
-//					
-//				
-//					
-//				}
-//			}
-		});
-		endButton.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (e.getSource() == endButton) {
-					System.out.println("44444444");
-					
+			public void keyReleased(KeyEvent e) {
+				String text = portText.getText();
+				if (text.isEmpty() || text.length() <= 3) {
+					startButton.setEnabled(false);
+				}
 
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				String text = portText.getText();
+				if(!text.isEmpty()) {
+					if(text.length() >= 3) {
+						startButton.setEnabled(true);
+					} else {
+						startButton.setEnabled(false);
+					}
 				}
 
 			}
@@ -130,5 +135,16 @@ public class TangServerFrame extends JFrame {
 
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton j = (JButton)e.getSource();
+		
+		if(j.equals(startButton)) {
+			mContext.startServer();
+			startButton.setEnabled(false);
+			portText.setEnabled(false);
+		} 
+
+	}
 
 }
